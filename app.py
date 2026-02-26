@@ -11,7 +11,7 @@ RENDER_URL = os.environ.get("RENDER_URL")  # https://xxx.onrender.com
 # =================================
 
 # Default video
-current_video_url = "https://munna1127.github.io/Cbse-test/Cbse%20test.html"
+current_video_url = "https://munna1127.github.io/Physical-formula/physical--formula.html"
 
 @app.route("/")
 def home():
