@@ -8,7 +8,7 @@ BOT_TOKEN = os.environ.get("BOT_TOKEN")
 CHAT_ID = os.environ.get("CHAT_ID")
 RENDER_URL = os.environ.get("RENDER_URL")
 
-current_video_url = "https://munna1127.github.io/Physical-formula/physical--formula.html"
+current_video_url = "https://jaswant0707.netlify.app/"
 
 
 @app.route("/")
