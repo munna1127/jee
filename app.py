@@ -8,7 +8,7 @@ BOT_TOKEN = os.environ.get("BOT_TOKEN")
 CHAT_ID = os.environ.get("CHAT_ID")
 RENDER_URL = os.environ.get("RENDER_URL")
 
-current_video_url = "https://www.selfstudys.com/mcq/jee/online/mock-test/physics/physics-test-280"
+current_video_url = "https://physics-hwt-test-8-phone.edgeone.app/"
 
 
 @app.route("/")
